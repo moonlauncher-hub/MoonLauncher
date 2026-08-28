@@ -1,4 +1,4 @@
-Name: Android CI
+name: Android CI
 
 on:
   workflow_dispatch:
@@ -47,4 +47,5 @@ jobs:
       with:
         name: MoonLauncher-APK
         path: app_pojavlauncher/build/outputs/apk/debug/*.apk
+
 
