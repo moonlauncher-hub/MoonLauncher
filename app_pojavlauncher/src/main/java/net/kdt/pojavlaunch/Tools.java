@@ -1247,16 +1247,34 @@ public final class Tools {
     }
 
     public static @NonNull String pickRuntime(MinecraftProfile minecraftProfile, int targetJavaVersion) {
-        String runtime = getSelectedRuntime(minecraftProfile);
-        String profileRuntime = getRuntimeName(minecraftProfile.javaDir);
-        Runtime pickedRuntime = MultiRTUtils.read(runtime);
-        if(runtime == null || pickedRuntime.javaVersion == 0 || pickedRuntime.javaVersion < targetJavaVersion) {
+        try {
+            if (minecraftProfile != null) {
+                String profileRuntime = getRuntimeName(minecraftProfile.javaDir);
+                if (profileRuntime != null) {
+                    Runtime runtimeObj = MultiRTUtils.read(profileRuntime);
+                    if (runtimeObj != null) {
+                        return profileRuntime;
+                    }
+                }
+            }
+
             String preferredRuntime = MultiRTUtils.getNearestJreName(targetJavaVersion);
-            if(preferredRuntime == null) throw new RuntimeException("Failed to autopick runtime!");
-            if(profileRuntime != null) minecraftProfile.javaDir = Tools.LAUNCHERPROFILES_RTPREFIX+preferredRuntime;
-            runtime = preferredRuntime;
+            if (preferredRuntime != null) {
+                if (minecraftProfile != null) {
+                    minecraftProfile.javaDir = Tools.LAUNCHERPROFILES_RTPREFIX + preferredRuntime;
+                }
+                return preferredRuntime;
+            }
+
+            List<Runtime> runtimes = MultiRTUtils.getRuntimes();
+            if (runtimes != null && !runtimes.isEmpty()) {
+                return runtimes.get(0).name;
+            }
+        } catch (Exception e) {
+            Log.e("Tools", "Bypassing pickRuntime error", e);
         }
-        return runtime;
+
+        return "Internal-17";
     }
 
     /** Triggers the share intent chooser, with the latestlog file attached to it */
