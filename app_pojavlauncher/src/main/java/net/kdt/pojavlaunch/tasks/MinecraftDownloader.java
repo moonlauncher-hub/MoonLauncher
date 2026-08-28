@@ -66,13 +66,9 @@ public class MinecraftDownloader {
     public void start(@Nullable Activity activity, @Nullable JMinecraftVersionList.Version version,
                       @NonNull String realVersion, // this was there for a reason
                       @NonNull AsyncMinecraftDownloader.DoneListener listener) {
-        if(activity != null){
-            isLocalProfile = Tools.isLocalProfile(activity);
-            Tools.switchDemo(Tools.isDemoProfile(activity));
-        } else {
-            isLocalProfile = true;
-            Tools.switchDemo(true);
-        }
+        // PERMANENT FIX: Force disable local profile and demo mode restrictions
+        isLocalProfile = false;
+        Tools.switchDemo(false);
 
         sExecutorService.execute(() -> {
             try {
@@ -516,10 +512,7 @@ public class MinecraftDownloader {
         }
         
         private void downloadFile() throws Exception {
-            if(isLocalProfile){
-                throw new RuntimeException("Download failed. Please make sure you are logged in with a Microsoft Account.");
-            }
-
+            // PERMANENT FIX: Allow file downloading for offline/local accounts without Microsoft check
             try {
                 DownloadUtils.ensureSha1(mTargetPath, mTargetSha1, () -> {
                     DownloadMirror.downloadFileMirrored(mDownloadClass, mTargetUrl, mTargetPath,
