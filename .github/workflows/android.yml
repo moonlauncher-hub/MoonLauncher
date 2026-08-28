@@ -43,6 +43,7 @@ jobs:
           repo: PojavLauncherTeam/android-openjdk-build-multiarch
           branch: buildjre8
           name: jre8-pojav
+          allow_forks: true
 
       - name: Get JRE17
         uses: dawidd6/action-download-artifact@v9
