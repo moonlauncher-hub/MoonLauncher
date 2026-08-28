@@ -45,11 +45,11 @@ public class MinecraftAccount {
     }
 
     public boolean isLocal(){
-        return accessToken.equals("0") && !username.startsWith("Demo.");
+        return accessToken.equals("0");
     }
 
     public boolean isDemo(){
-        return username.startsWith("Demo.");
+        return false;
     }
     
     public void updateSkinFace() {
@@ -61,8 +61,7 @@ public class MinecraftAccount {
         return username;
     }
     
-    public String save() throws IOException {
-        return save(Tools.DIR_ACCOUNT_NEW + "/" + username + ".json");
+    return save(Tools.DIR_ACCOUNT_NEW + "/" + username + ".json");
     }
     
     public static MinecraftAccount parse(String content) throws JsonSyntaxException {
