@@ -1,4 +1,4 @@
-name: Android CI
+Name: Android CI
 
 on:
   workflow_dispatch:
@@ -22,6 +22,21 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
 
+    - name: Replace App Icons & Remove XML Overrides
+      run: |
+        # Remove adaptive icon XML files so Android uses PNG images directly
+        rm -f app_pojavlauncher/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+        rm -f app_pojavlauncher/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+
+        # Copy Moon Logo across all mipmap density folders
+        for dir in app_pojavlauncher/src/main/res/mipmap-*; do
+          if [ -d "$dir" ]; then
+            cp app_pojavlauncher/src/main/res/mipmap-hdpi/ic_launcher.png "$dir/ic_launcher.png"
+            cp app_pojavlauncher/src/main/res/mipmap-hdpi/ic_launcher.png "$dir/ic_launcher_round.png"
+            cp app_pojavlauncher/src/main/res/mipmap-hdpi/ic_launcher.png "$dir/ic_launcher_foreground.png"
+          fi
+        done
+
     - name: Build APK
       run: |
         chmod +x gradlew
@@ -32,3 +47,4 @@ jobs:
       with:
         name: MoonLauncher-APK
         path: app_pojavlauncher/build/outputs/apk/debug/*.apk
+
